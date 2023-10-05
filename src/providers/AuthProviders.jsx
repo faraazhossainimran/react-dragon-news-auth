@@ -7,16 +7,20 @@ export const AuthContext = createContext(null);
 const auth = getAuth(app);
 const AuthProviders = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true)
   // create user
   const createUser = (email, password) => {
+    setLoading(true)
     return createUserWithEmailAndPassword(auth, email, password);
   };
   // sign in user
 const signIn = (email,password) => {
+  setLoading(true)
   return signInWithEmailAndPassword(auth, email,password)
 }
 //   log out the site 
 const logOut = () => {
+  setLoading(true)
     return signOut(auth)
 }
 //   observer
@@ -24,6 +28,7 @@ const logOut = () => {
     const unsubscribe = onAuthStateChanged(auth, currentUser => {
         console.log('user in the auth stae changed', currentUser);
         setUser(currentUser)
+        setLoading(false)
     })
     return () => {
         unsubscribe();
@@ -31,8 +36,9 @@ const logOut = () => {
   },[])
   const authInfo = { 
     user, 
+    loading,
     createUser, 
-    signIn,
+    signIn, 
     logOut
  };
 
